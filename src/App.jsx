@@ -15,7 +15,7 @@ function App() {
     footer,
   } = siteContent;
   const [theme, setTheme] = useState(() => localStorage.getItem('portfolio-theme') || 'dark');
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [formState, setFormState] = useState({ status: 'idle', message: '' });
   const [activeSection, setActiveSection] = useState('about');
   const sectionLinks = [
     { id: 'about', label: 'About' },
@@ -37,13 +37,6 @@ function App() {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem('portfolio-theme', theme);
   }, [theme]);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('submitted') === '1') {
-      setShowSuccess(true);
-    }
-  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -92,6 +85,39 @@ function App() {
 
   const toggleTheme = () => {
     setTheme((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'));
+  };
+
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    setFormState({ status: 'loading', message: 'Sending your message...' });
+
+    try {
+      const response = await fetch(contact.formAction, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        form.reset();
+        setFormState({ status: 'success', message: contact.successMessage });
+        return;
+      }
+
+      setFormState({
+        status: 'error',
+        message: contact.errorMessage,
+      });
+    } catch (error) {
+      setFormState({
+        status: 'error',
+        message: contact.errorMessage,
+      });
+    }
   };
 
   return (
@@ -338,13 +364,12 @@ function App() {
 
           <form
             className="contact-form"
-            action={contact.formAction}
-            method="POST"
+            onSubmit={handleFormSubmit}
           >
-            <input type="hidden" name="_subject" value={contact.formSubject} />
-            <input type="hidden" name="_captcha" value="false" />
-            <input type="hidden" name="_next" value={contact.successRedirect} />
-            <input type="hidden" name="_url" value={contact.formUrl} />
+            <input type="hidden" name="access_key" value={contact.accessKey} />
+            <input type="hidden" name="subject" value={contact.formSubject} />
+            <input type="hidden" name="from_name" value="Dev Varshney Portfolio" />
+            <input type="checkbox" name="botcheck" className="botcheck-field" tabIndex="-1" autoComplete="off" />
             <label>
               <span>Name</span>
               <input type="text" name="name" placeholder="Your name" required />
@@ -357,12 +382,16 @@ function App() {
               <span>Message</span>
               <textarea name="message" rows="6" placeholder="Tell me about your project or role." required />
             </label>
-            <button className="button button-primary form-submit" type="submit">
-              Send Message
+            <button className="button button-primary form-submit" type="submit" disabled={formState.status === 'loading'}>
+              {formState.status === 'loading' ? 'Sending...' : 'Send Message'}
             </button>
           </form>
 
-          {showSuccess ? <p className="form-success">{contact.successMessage}</p> : null}
+          {formState.status !== 'idle' ? (
+            <p className={formState.status === 'success' ? 'form-success' : 'form-error'}>
+              {formState.message}
+            </p>
+          ) : null}
         </section>
       </main>
 

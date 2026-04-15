@@ -530,6 +530,10 @@ h3 {
   gap: 8px;
 }
 
+.botcheck-field {
+  display: none;
+}
+
 .contact-form span {
   color: var(--muted);
   font-size: 0.92rem;
@@ -566,6 +570,15 @@ h3 {
   border: 1px solid rgba(110, 231, 200, 0.25);
   border-radius: 18px;
   background: rgba(110, 231, 200, 0.08);
+  color: var(--text);
+}
+
+.form-error {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 141, 107, 0.28);
+  border-radius: 18px;
+  background: rgba(255, 141, 107, 0.08);
   color: var(--text);
 }
 
