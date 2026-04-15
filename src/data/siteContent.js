@@ -218,7 +218,8 @@ export const siteContent = {
     location: 'Ghaziabad, India',
     formAction: 'https://formsubmit.co/varshney.dev.013@gmail.com',
     formSubject: 'New portfolio message for Dev Varshney',
-    successRedirect: 'https://your-domain.com/?submitted=1#contact',
+    successRedirect: 'https://dev-varshney-portfolio.web.app/?submitted=1#contact',
+    formUrl: 'https://dev-varshney-portfolio.web.app/#contact',
     successMessage: 'Message sent successfully. I will get back to you soon.',
     links: [
       { label: 'GitHub', href: 'https://github.com/dev200413y' },

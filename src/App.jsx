@@ -344,6 +344,7 @@ function App() {
             <input type="hidden" name="_subject" value={contact.formSubject} />
             <input type="hidden" name="_captcha" value="false" />
             <input type="hidden" name="_next" value={contact.successRedirect} />
+            <input type="hidden" name="_url" value={contact.formUrl} />
             <label>
               <span>Name</span>
               <input type="text" name="name" placeholder="Your name" required />
